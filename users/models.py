@@ -1,18 +1,22 @@
+from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+
+from validators import validate_telegram_id
 
 
 class User(AbstractUser):
     first_name = models.CharField(max_length=128, blank=False, null=False)
     last_name = models.CharField(max_length=128, blank=False, null=False)
-    username = models.CharField(max_length=128, blank=False, null=False, unique=True)
-    email = models.CharField(max_length=256, blank=False, null=False, unique=True)
+    username = models.CharField(max_length=128, blank=False, null=False, unique=True,
+                                validators=[UnicodeUsernameValidator()])
+    email = models.EmailField(blank=False, null=False, unique=True)
 
 
 class TelegramAuthorization(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.CASCADE, blank=False, null=False)
-    telegram_id = models.IntegerField(null=False, blank=False, unique=True)
+    telegram_id = models.PositiveIntegerField(null=False, blank=False, unique=True, validators=[validate_telegram_id])
     authorization_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"User {self.user.username} authorized on {self.telegram_id}"
+        return f"{self.user} | Authorized on telegram account \"{self.telegram_id}\" | {self.authorization_date}"
