@@ -1,10 +1,10 @@
+from datetime import date
+
 from django.core.exceptions import ValidationError
-from django.db.models.query import QuerySet
 
 from bookings.models import Booking, TelegramBooking
 from rooms.models import Room
-from users.models import User, TelegramUser
-from datetime import date
+from users.models import TelegramUser, User
 
 
 def get_user_active_bookings(user: TelegramUser) -> list:
@@ -49,8 +49,8 @@ def book_room(user: TelegramUser, room_number: int, checkin_date: date, checkout
 
     # creates booking
     user = User.objects.get(username=user.username)
-    booking = Booking.objects.create(user=user, room=room, checkin_date=checkin_date, checkout_date=checkout_date,
-                                     price=room.current_price * difference.days)
+    Booking.objects.create(user=user, room=room, checkin_date=checkin_date, checkout_date=checkout_date,
+                           price=room.current_price * difference.days)
 
 
 def is_room_available_for(room: Room, checkin_date: date, checkout_date: date) -> bool:

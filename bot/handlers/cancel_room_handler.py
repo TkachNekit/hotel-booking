@@ -1,9 +1,10 @@
 from asgiref.sync import sync_to_async
-from telegram import Update, ReplyKeyboardMarkup, ReplyKeyboardRemove
-from telegram.ext import ConversationHandler, CallbackContext, CommandHandler, filters, MessageHandler
+from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
+from telegram.ext import (CallbackContext, CommandHandler, ConversationHandler,
+                          MessageHandler, filters)
 
-from bookings.views import get_user_active_bookings, cancel_user_booking
-from users.views import is_authorized, get_user_by_telegram_id
+from bookings.views import cancel_user_booking, get_user_active_bookings
+from users.views import get_user_by_telegram_id, is_authorized
 
 END = ConversationHandler.END
 IS_AUTHORIZED, HANDLE_BOOKING = range(2)

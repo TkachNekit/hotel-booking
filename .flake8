@@ -1,0 +1,6 @@
+[flake8]
+exclude =
+    migrations
+    telegram_messages.py
+
+max-line-length = 120

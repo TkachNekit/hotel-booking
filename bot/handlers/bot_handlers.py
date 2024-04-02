@@ -1,5 +1,5 @@
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import CommandHandler, ContextTypes, CallbackQueryHandler
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram.ext import CallbackQueryHandler, CommandHandler, ContextTypes
 
 from bot.handlers.book_room_handler import book_room_conversation
 from bot.handlers.cancel_room_handler import cancel_booking_conversation
@@ -7,7 +7,8 @@ from bot.handlers.login_conversation_handler import login_conversation
 from bot.handlers.logout_conversation_handler import logout_conversation
 from bot.handlers.register_conversation_handler import register_conversation
 from bot.handlers.show_rooms_handler import show_rooms_conversation
-from bot.handlers.telegram_messages import TELEGRAM_START_MESSAGE, COMMAND_CATALOG
+from bot.handlers.telegram_messages import (COMMAND_CATALOG,
+                                            TELEGRAM_START_MESSAGE)
 
 
 def get_handlers() -> list:

@@ -1,10 +1,11 @@
 from datetime import datetime
 
 from asgiref.sync import sync_to_async
-from telegram import Update, ReplyKeyboardMarkup, ReplyKeyboardRemove
-from telegram.ext import CommandHandler, ConversationHandler, MessageHandler, filters, CallbackContext
+from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
+from telegram.ext import (CallbackContext, CommandHandler, ConversationHandler,
+                          MessageHandler, filters)
 
-from rooms.views import get_available_rooms, SortType
+from rooms.views import SortType, get_available_rooms
 
 END = ConversationHandler.END
 CONV_DATE, CONV_COST, CONV_CAPACITY, CONV_SORT = range(4)
@@ -164,7 +165,8 @@ def get_cost_conversation() -> ConversationHandler:
             # Check if max_cost >= min_cost
             if max_cost < context.user_data['min_cost']:
                 await update.message.reply_text(
-                    "The maximum cost cannot be less than the minimum. Please enter a number greater than or equal to the minimum cost.")
+                    "The maximum cost cannot be less than the minimum. "
+                    "Please enter a number greater than or equal to the minimum cost.")
                 return MAX_COST
 
             context.user_data['max_cost'] = max_cost

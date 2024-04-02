@@ -1,6 +1,7 @@
 from asgiref.sync import sync_to_async
-from telegram import Update, ReplyKeyboardMarkup, ReplyKeyboardRemove
-from telegram.ext import ConversationHandler, CallbackContext, CommandHandler, filters, MessageHandler
+from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
+from telegram.ext import (CallbackContext, CommandHandler, ConversationHandler,
+                          MessageHandler, filters)
 
 from users.views import is_authorized, logout_with_telegram
 
@@ -34,11 +35,11 @@ async def logout_confirmation(update: Update, context: CallbackContext) -> int:
         user_id = update.effective_user.id
         await sync_to_async(logout_with_telegram)(user_id)
         await update.message.reply_text(
-            f"You were logged out", parse_mode='Markdown', reply_markup=ReplyKeyboardRemove()
+            "You were logged out", parse_mode='Markdown', reply_markup=ReplyKeyboardRemove()
         )
     else:
         await update.message.reply_text(
-            f"You were *not* logged out", parse_mode='Markdown', reply_markup=ReplyKeyboardRemove()
+            "You were *not* logged out", parse_mode='Markdown', reply_markup=ReplyKeyboardRemove()
         )
     context.user_data.clear()
     return END

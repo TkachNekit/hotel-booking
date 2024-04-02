@@ -4,7 +4,7 @@ from django.core.validators import MinValueValidator
 from django.db import models
 
 from rooms.models import Room, TelegramRoom
-from users.models import User, TelegramUser
+from users.models import TelegramUser, User
 
 
 class Booking(models.Model):

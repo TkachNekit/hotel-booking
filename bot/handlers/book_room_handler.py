@@ -3,12 +3,13 @@ from datetime import datetime
 from asgiref.sync import sync_to_async
 from django.core.exceptions import ValidationError
 from django.http import Http404
-from telegram import Update, ReplyKeyboardMarkup, ReplyKeyboardRemove
-from telegram.ext import ConversationHandler, CallbackContext, CommandHandler, filters, MessageHandler
+from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
+from telegram.ext import (CallbackContext, CommandHandler, ConversationHandler,
+                          MessageHandler, filters)
 
 from bookings.views import book_room
 from rooms.views import get_room_by_number
-from users.views import is_authorized, get_user_by_telegram_id
+from users.views import get_user_by_telegram_id, is_authorized
 
 END = ConversationHandler.END
 IS_AUTHORIZED, ROOM_NUMBER, CHECKIN_DATE, CHECKOUT_DATE, SHOW_BOOKING_RESULT = range(5)

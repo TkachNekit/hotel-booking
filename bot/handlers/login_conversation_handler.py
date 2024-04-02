@@ -1,7 +1,8 @@
 from asgiref.sync import sync_to_async
 from django.core.exceptions import ValidationError
-from telegram import Update, ReplyKeyboardMarkup, ReplyKeyboardRemove
-from telegram.ext import ConversationHandler, CallbackContext, CommandHandler, filters, MessageHandler
+from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
+from telegram.ext import (CallbackContext, CommandHandler, ConversationHandler,
+                          MessageHandler, filters)
 
 from users.views import is_authorized, login_with_telegram
 

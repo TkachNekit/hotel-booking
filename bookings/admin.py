@@ -1,6 +1,4 @@
-from django.contrib import admin
-from django.contrib import messages
-
+from django.contrib import admin, messages
 
 from bookings.models import Booking
 
@@ -21,4 +19,3 @@ class BookingAdmin(admin.ModelAdmin):
         except ValueError as e:
             messages.set_level(request, messages.ERROR)
             messages.error(request, str(e))
-

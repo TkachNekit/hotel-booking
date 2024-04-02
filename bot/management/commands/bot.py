@@ -1,10 +1,10 @@
 import logging
 
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from telegram.error import InvalidToken
 
 from bot.bot import Bot
-from django.conf import settings
 
 log_level = logging.INFO if settings.DEBUG else logging.WARNING
 

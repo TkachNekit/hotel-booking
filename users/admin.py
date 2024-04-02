@@ -1,5 +1,6 @@
 from django.contrib import admin
-from users.models import User, TelegramAuthorization
+
+from users.models import TelegramAuthorization, User
 
 
 @admin.register(User)

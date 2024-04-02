@@ -1,13 +1,16 @@
 from asgiref.sync import sync_to_async
-from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from telegram import Update, ReplyKeyboardMarkup, ReplyKeyboardRemove
+from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.error import NetworkError
-from telegram.ext import ConversationHandler, CallbackContext, CommandHandler, filters, MessageHandler
+from telegram.ext import (CallbackContext, CommandHandler, ConversationHandler,
+                          MessageHandler, filters)
+
+from users.views import (is_authorized, is_email_unique, is_username_unique,
+                         register)
 from validators import validate_username
-from users.views import is_authorized, is_username_unique, register, is_email_unique
 
 END = ConversationHandler.END
 IS_AUTHORIZED, FIRST_NAME, LAST_NAME, USERNAME, EMAIL, PASSWORD1, PASSWORD2, REGISTRATION = range(8)
@@ -108,7 +111,7 @@ async def email_handle(update: Update, context: CallbackContext) -> int:
             "Please, enter your *EMAIL*:", parse_mode='Markdown', reply_markup=ReplyKeyboardRemove()
         )
         return EMAIL
-    except NetworkError as e:
+    except NetworkError:
         await update.message.reply_text("This email is incorrect.", parse_mode='Markdown')
         await update.message.reply_text(
             "Please, enter your *EMAIL*:", parse_mode='Markdown', reply_markup=ReplyKeyboardRemove()

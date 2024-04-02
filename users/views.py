@@ -1,13 +1,10 @@
+from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.auth.password_validation import validate_password
-
-from users.models import User, TelegramAuthorization, TelegramUser
-
-from django.contrib.auth.hashers import make_password, check_password
-
-from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 
-from validators import validate_username, validate_telegram_id
+from users.models import TelegramAuthorization, TelegramUser, User
+from validators import validate_telegram_id, validate_username
 
 
 def register(first_name: str, last_name: str, username: str, email: str, password: str) -> None:
@@ -30,7 +27,7 @@ def register(first_name: str, last_name: str, username: str, email: str, passwor
     hashed_password = make_password(password)
 
     # Create the user
-    user = User.objects.create(
+    User.objects.create(
         first_name=first_name, last_name=last_name, username=username, email=email, password=hashed_password
     )
 
@@ -66,7 +63,7 @@ def login_with_telegram(telegram_id: int, username: str, password: str) -> None:
         raise ValidationError("Passwords do not match.")
 
     # Creates link with telegram account and user
-    authorization = TelegramAuthorization.objects.create(user=user, telegram_id=telegram_id)
+    TelegramAuthorization.objects.create(user=user, telegram_id=telegram_id)
 
 
 # telegram
