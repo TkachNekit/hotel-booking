@@ -61,6 +61,9 @@ INSTALLED_APPS = [
     'rooms',
     'users',
     'bot',
+    'api',
+
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
