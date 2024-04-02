@@ -21,3 +21,15 @@ class Room(models.Model):
     def __str__(self):
         return f"Room №{self.number} | Type: {self.type.name}"
 
+
+class TelegramRoom:
+    def __init__(self, room):
+        self.number = room.number
+        self.type = room.type.name
+        self.price = room.current_price
+        self.capacity = room.capacity
+        self.description = room.description if room.description else "No description"
+
+    def __str__(self):
+        return f"Room №{self.number} | Type: {self.type} | Cost for one night: {self.price} | " \
+               f"Capacity: {self.capacity} | Description: {self.description}"

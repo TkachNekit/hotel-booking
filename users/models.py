@@ -20,3 +20,16 @@ class TelegramAuthorization(models.Model):
 
     def __str__(self):
         return f"{self.user} | Authorized on telegram account \"{self.telegram_id}\" | {self.authorization_date}"
+
+
+class TelegramUser:
+    def __init__(self, user: User):
+        self.username = user.username
+        self.first_name = user.first_name
+        self.last_name = user.last_name
+        self.email = user.email
+        self.is_superuser = user.is_superuser
+        self.last_login = user.last_login
+
+    def __str__(self):
+        return f"{self.username}"

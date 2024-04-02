@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
 from bookings.views import is_room_available_for
-from rooms.models import Room
+from rooms.models import Room, TelegramRoom
 
 
 class SortType(Enum):
@@ -35,17 +35,12 @@ def get_available_rooms(checkin_date: date, checkout_date: date, min_cost: float
 
     # Filter by dates and create return list
     lst = []
-    for r in rooms_list:
+    for room in rooms_list:
         if checkin_date is not None and checkout_date is not None:
-            if is_room_available_for(r, checkin_date, checkout_date):
-                dic = {
-                    'number': r.number,
-                    'type': r.type.name,
-                    'price': r.current_price,
-                    'capacity': r.capacity,
-                    'description': r.description,
-                }
-                lst.append(dic)
+            if not is_room_available_for(room, checkin_date, checkout_date):
+                continue
+        tg_room = TelegramRoom(room)
+        lst.append(tg_room)
 
     # Sort return list by given sort type
     sorted_lst = _sort_rooms(lst, SortType(sort_type))
@@ -60,11 +55,12 @@ def _validate_args(checkin_date: date, checkout_date: date, min_cost: float, max
             raise ValidationError("Max cost can't be lower than min cost")
 
     # Validate given dates
-    difference = checkout_date - checkin_date
-    if difference.days < 1:
-        raise ValidationError("Checkout date can't be earlier than 1 day after an check in")
-    if checkin_date < date.today() or checkout_date < date.today():
-        raise ValidationError("Can't book rooms for the past")
+    if checkout_date is not None and checkin_date is not None:
+        difference = checkout_date - checkin_date
+        if difference.days < 1:
+            raise ValidationError("Checkout date can't be earlier than 1 day after an check in")
+        if checkin_date < date.today() or checkout_date < date.today():
+            raise ValidationError("Can't book rooms for the past")
 
     # Validate sort type
     if not isinstance(sort_type, int):
@@ -76,24 +72,18 @@ def _validate_args(checkin_date: date, checkout_date: date, min_cost: float, max
 def _sort_rooms(lst: list, sort_type: SortType) -> list:
     # Sort return list by given sort type
     if sort_type == SortType.COST_ASCENDING:
-        lst = sorted(lst, key=lambda x: x['price'])
+        lst = sorted(lst, key=lambda x: x.price)
     elif sort_type == SortType.COST_DESCENDING:
-        lst = sorted(lst, key=lambda x: x['price'], reverse=True)
+        lst = sorted(lst, key=lambda x: x.price, reverse=True)
     elif sort_type == SortType.CAPACITY_ASCENDING:
-        lst = sorted(lst, key=lambda x: x['capacity'])
+        lst = sorted(lst, key=lambda x: x.capacity)
     elif sort_type == SortType.CAPACITY_DESCENDING:
-        lst = sorted(lst, key=lambda x: x['capacity'], reverse=True)
+        lst = sorted(lst, key=lambda x: x.capacity, reverse=True)
     return lst
 
 
-def get_room_by_number(room_number: int) -> dict:
+def get_room_by_number(room_number: int) -> TelegramRoom:
     # Retrieves a room by its number.
     room = get_object_or_404(Room, number=room_number)
-    dic = {
-        'number': room.number,
-        'type': room.type.name,
-        'price': room.current_price,
-        'capacity': room.capacity,
-        'description': room.description,
-    }
-    return dic
+    tg_room = TelegramRoom(room)
+    return tg_room

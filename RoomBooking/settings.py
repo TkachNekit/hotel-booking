@@ -39,6 +39,9 @@ environ.Env.read_env(BASE_DIR / '.env', overwrite=True)
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
 
+# BOT TOKEN
+BOT_TOKEN = env("BOT_TOKEN")
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
@@ -57,6 +60,7 @@ INSTALLED_APPS = [
     'bookings',
     'rooms',
     'users',
+    'bot',
 ]
 
 MIDDLEWARE = [
@@ -92,13 +96,6 @@ WSGI_APPLICATION = "RoomBooking.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
 
 DATABASES = {
     "default": {

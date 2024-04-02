@@ -1,23 +1,27 @@
 from django.core.exceptions import ValidationError
 from django.db.models.query import QuerySet
 
-from bookings.models import Booking
+from bookings.models import Booking, TelegramBooking
 from rooms.models import Room
-from users.models import User
+from users.models import User, TelegramUser
 from datetime import date
 
 
-def get_user_bookings(user: User) -> QuerySet:
-    return Booking.objects.filter(user=user)
+def get_user_active_bookings(user: TelegramUser) -> list:
+    user = User.objects.get(username=user.username)
+    return [TelegramBooking(booking) for booking in Booking.objects.filter(user=user) if
+            booking.status == Booking.BOOKED]
 
 
-def cancel_user_booking(user: User, booking_id: int) -> None:
+def cancel_user_booking(user: TelegramUser, booking_id: int) -> None:
     # Validate booking id
     if not Booking.objects.filter(id=booking_id):
         raise ValidationError("Booking doesn't exist.")
 
     # Validate if it's user's booking
     booking = Booking.objects.get(id=booking_id)
+
+    user = User.objects.get(username=user.username)
     if booking.user != user:
         raise ValidationError("User can only cancel his bookings.")
 
@@ -26,7 +30,7 @@ def cancel_user_booking(user: User, booking_id: int) -> None:
     booking.save()
 
 
-def book_room(user: User, room_number: int, checkin_date: date, checkout_date: date) -> None:
+def book_room(user: TelegramUser, room_number: int, checkin_date: date, checkout_date: date) -> None:
     # Validate room number
     if not Room.objects.filter(number=room_number).exists():
         raise ValidationError("Room with given room number doesn't exist.")
@@ -41,9 +45,10 @@ def book_room(user: User, room_number: int, checkin_date: date, checkout_date: d
 
     # Check if room is free for this dates or booking for this room is canceled
     if not is_room_available_for(room, checkin_date, checkout_date):
-        raise ValidationError("Room unavailable for this dates")
+        raise ValidationError("Room unavailable for these dates")
 
     # creates booking
+    user = User.objects.get(username=user.username)
     booking = Booking.objects.create(user=user, room=room, checkin_date=checkin_date, checkout_date=checkout_date,
                                      price=room.current_price * difference.days)
 

@@ -1,6 +1,6 @@
 from django.contrib.auth.password_validation import validate_password
 
-from users.models import User, TelegramAuthorization
+from users.models import User, TelegramAuthorization, TelegramUser
 
 from django.contrib.auth.hashers import make_password, check_password
 
@@ -35,6 +35,18 @@ def register(first_name: str, last_name: str, username: str, email: str, passwor
     )
 
 
+def is_username_unique(username: str) -> bool:
+    if User.objects.filter(username=username).exists():
+        return False
+    return True
+
+
+def is_email_unique(email: str) -> bool:
+    if User.objects.filter(email=email).exists():
+        return False
+    return True
+
+
 # telegram
 def login_with_telegram(telegram_id: int, username: str, password: str) -> None:
     # User already logged in with this telegram acc
@@ -43,7 +55,7 @@ def login_with_telegram(telegram_id: int, username: str, password: str) -> None:
 
     # Checks if user with given username exists
     if not User.objects.filter(username=username).exists():
-        raise ValidationError("User with '{username}' username does not exist.")
+        raise ValidationError(f"User with '{username}' username does not exist.")
     user = User.objects.get(username=username)
 
     # Validate telegram id
@@ -71,7 +83,7 @@ def logout_with_telegram(telegram_id: int) -> None:
     authorization.delete()
 
 
-def get_user_by_telegram_id(telegram_id: int) -> dict:
+def get_user_by_telegram_id(telegram_id: int) -> TelegramUser:
     # Validate telegram id
     validate_telegram_id(telegram_id)
 
@@ -80,15 +92,8 @@ def get_user_by_telegram_id(telegram_id: int) -> dict:
         raise ValidationError("User with given telegram id is not logged in.")
 
     user = TelegramAuthorization.objects.get(telegram_id=telegram_id).user
-    user_dic = {
-        'first_name':user.first_name,
-        'last_name': user.last_name,
-        'username': user.username,
-        'email': user.email,
-        'is_superuser': user.is_superuser,
-        'last_login': user.last_login,
-    }
-    return user_dic
+    tg_user = TelegramUser(user)
+    return tg_user
 
 
 def is_authorized(telegram_id: int) -> bool:
@@ -96,4 +101,3 @@ def is_authorized(telegram_id: int) -> bool:
     validate_telegram_id(telegram_id)
 
     return TelegramAuthorization.objects.filter(telegram_id=telegram_id).exists()
-
