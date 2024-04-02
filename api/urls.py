@@ -1,8 +1,13 @@
-from django.urls import path
+from django.urls import include, path
+from rest_framework import routers
 
-from api.views import RoomListAPIView
+from api.views import RoomModelViewSet
 
 app_name = 'api'
+
+router = routers.DefaultRouter()
+router.register(r'rooms', RoomModelViewSet)
+
 urlpatterns = [
-    path('room-list/', RoomListAPIView.as_view(), name='room_list'),    # GET .../api/room-list/
+    path('', include(router.urls)),
 ]
