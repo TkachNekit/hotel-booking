@@ -84,4 +84,6 @@ http://127.0.0.1:8000/api/rooms/
 - del room
 
 
-## DataBase Schema
+## [DataBase Schema](https://github.com/TkachNekit/hotel-booking/blob/master/images/Hotel%20booking%20database.pdf)
+(If it doesn't open in preview you can always download it)
+## [Activity Diagram](https://github.com/TkachNekit/hotel-booking/blob/master/images/Hotel%20Booking%2C%20activity%20diagram.png)
