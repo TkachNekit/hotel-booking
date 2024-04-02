@@ -64,3 +64,24 @@ BOT_TOKEN=bot_token
 > It might not be working because it's deployed and running locally)
 
 ![img.png](images/img.png)
+
+
+## API
+
+---
+
+*No authorization:* GET
+
+*Auth required:* POST, PATCH, DEL
+
+*Auth:* TokenAuthentication
+
+http://127.0.0.1:8000/api/rooms/
+
+- get room list
+- add new room
+- update room
+- del room
+
+
+## DataBase Schema

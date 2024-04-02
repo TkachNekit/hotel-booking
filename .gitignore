@@ -2,3 +2,5 @@
 /bookings/fixtures/
 /rooms/fixtures/
 .env
+.idea
+__pycache__
