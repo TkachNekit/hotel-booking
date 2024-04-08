@@ -12,6 +12,8 @@ class User(AbstractUser):
                                 validators=[UnicodeUsernameValidator()])
     email = models.EmailField(blank=False, null=False, unique=True)
 
+    REQUIRED_FIELDS = ('first_name', 'last_name', 'email', )
+
 
 class TelegramAuthorization(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.CASCADE, blank=False, null=False)

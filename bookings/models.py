@@ -34,9 +34,10 @@ class Booking(models.Model):
 
     def save(self, *args, **kwargs):
         # Check if only the status field is being updated
-        if 'status' in kwargs['update_fields'] and len(kwargs['update_fields']) == 1:
-            # Only updating the status, no need to perform room availability check
-            super().save(*args, **kwargs)
+        if 'update_fields' in kwargs:
+            if 'status' in kwargs['update_fields'] and len(kwargs['update_fields']) == 1:
+                # Only updating the status, no need to perform room availability check
+                super().save(*args, **kwargs)
         else:
             # Other fields are being updated or it's a new booking, perform the usual checks
             # Validate room existence

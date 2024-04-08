@@ -86,8 +86,11 @@ class BookingModelViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        queryset = super(BookingModelViewSet, self).get_queryset()
-        return queryset.filter(user=self.request.user)
+        if self.request.user.is_staff:
+            return super(BookingModelViewSet, self).get_queryset()
+        else:
+            queryset = super(BookingModelViewSet, self).get_queryset()
+            return queryset.filter(user=self.request.user)
 
     def get_permissions(self):
         if self.action in ('update', 'destroy',):
@@ -118,7 +121,7 @@ class BookingModelViewSet(ModelViewSet):
         except ValidationError as e:
             return Response({'dates': e.message}, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['patch'])
     def cancel(self, request, pk=None):
         booking = self.get_object()
         booking.status = Booking.CANCELED
